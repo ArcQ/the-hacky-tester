@@ -1,5 +1,6 @@
 import React from "react";
 import { Socket } from "phoenixjs";
+import { backendUrl } from "../../config";
 
 export default class Chat extends React.Component {
   constructor(props) {
@@ -11,8 +12,7 @@ export default class Chat extends React.Component {
 
   componentDidMount() {
     const roomToken = 100;
-    console.log(window.location.search.split("=")[1]);
-    const socket = new Socket("ws://localhost:4000/socket", {
+    const socket = new Socket(`ws://${backendUrl}/socket`, {
       params: { userToken: window.location.search.split("=")[1] }
     });
     socket.connect();
@@ -23,9 +23,7 @@ export default class Chat extends React.Component {
 
     this.channel
       .join()
-      .receive("ok", ({ messages, ...blah }) =>
-        console.log("catching up", messages, blah)
-      )
+      .receive("ok", ({ messages }) => console.log("catching up", messages))
       .receive("error", ({ reason }) => console.log("failed join", reason))
       .receive("timeout", () =>
         console.log("Networking issue. Still waiting...")
@@ -35,7 +33,6 @@ export default class Chat extends React.Component {
   componentWillUnmount() {}
 
   handleChange(e) {
-    console.log(e.target.value);
     this.setState({ value: e.target.value });
   }
 
@@ -54,6 +51,11 @@ export default class Chat extends React.Component {
     return (
       <>
         <h2>Chat</h2>
+        {this.state.messages.map(msg => (
+          <div>
+            <span>{msg.user}</span>:<span>{msg.m}</span>
+          </div>
+        ))}
         <input
           onChange={this.handleChange}
           onKeyPress={this.keyPressed}
