@@ -1,10 +1,12 @@
 import React from "react";
 import Chat from "./routes/chat";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import Login from "./routes/login";
+import { Router, Switch, Route, Link } from "react-router-dom";
+import history from "./utils/history";
 
 export default function App() {
   return (
-    <Router>
+    <Router history={history}>
       <div>
         <nav>
           <ul>
@@ -17,6 +19,9 @@ export default function App() {
             <li>
               <Link to="/users">Users</Link>
             </li>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
           </ul>
         </nav>
         <Switch>
@@ -25,6 +30,9 @@ export default function App() {
           </Route>
           <Route path="/users">
             <Users />
+          </Route>
+          <Route path="/login">
+            <Login />
           </Route>
           <Route path="/">
             <Home />
