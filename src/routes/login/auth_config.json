@@ -1,5 +1,9 @@
 {
   "domain": "touchbase-dev.auth0.com",
   "clientId": "7tUp1cIrxkMg7CVdKUOAvlb5vgnjTqHo",
-  "audience": "touchbase-core-dev"
+  "audience": "touchbase-core-dev",
+  "cacheLocation": "localstorage",
+  "advancedOptions": {
+    "defaultScope": "openid profile name username https://touchbase-dev.auth0.com/username"
+  }
 }

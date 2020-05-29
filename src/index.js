@@ -23,6 +23,7 @@ ReactDOM.render(
       domain={config.domain}
       client_id={config.clientId}
       audience={config.audience}
+      advancedOptions={config.advancedOptions}
       redirect_uri={window.location.origin}
       onRedirectCallback={onRedirectCallback}
     >
