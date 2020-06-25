@@ -4,9 +4,11 @@
   "private": true,
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.8.2",
+    "@aws-amplify/ui-react": "^0.2.8",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "aws-amplify": "^3.0.16",
     "phoenixjs": "^1.0.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

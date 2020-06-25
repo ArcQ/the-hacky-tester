@@ -1,16 +1,14 @@
 import React from "react";
-import { useAuth0 } from "../react-auth0-spa";
+import { Auth } from "aws-amplify";
 import { Link } from "react-router-dom";
 
-const NavBar = () => {
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+const NavBar = isAuthenticated => {
   return (
     <div>
       {!isAuthenticated && (
-        <button onClick={() => loginWithRedirect({})}>Log in</button>
+        <button onClick={() => Auth.federatedSignIn()}>Open Hosted UI</button>
       )}
 
-      {isAuthenticated && <button onClick={() => logout()}>Log out</button>}
       {isAuthenticated && (
         <span>
           <Link to="/login/profile">Profile</Link>

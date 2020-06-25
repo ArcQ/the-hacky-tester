@@ -3,13 +3,13 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { Auth0Provider, useAuth0 } from "./routes/login/react-auth0-spa";
+import { Auth0Provider } from "./routes/login/react-auth0-spa";
 import config from "./routes/login/auth_config.json";
 import history from "./utils/history";
 
 // A function that routes the user to the right place
 // after login
-const onRedirectCallback = (appState) => {
+const onRedirectCallback = appState => {
   history.push(
     appState && appState.targetUrl
       ? appState.targetUrl
@@ -19,16 +19,16 @@ const onRedirectCallback = (appState) => {
 
 ReactDOM.render(
   <React.StrictMode>
-    <Auth0Provider
-      domain={config.domain}
-      client_id={config.clientId}
-      audience={config.audience}
-      advancedOptions={config.advancedOptions}
-      redirect_uri={window.location.origin}
-      onRedirectCallback={onRedirectCallback}
-    >
-      <App />
-    </Auth0Provider>
+    {/* <Auth0Provider */}
+    {/*   domain={config.domain} */}
+    {/*   client_id={config.clientId} */}
+    {/*   audience={config.audience} */}
+    {/*   advancedOptions={config.advancedOptions} */}
+    {/*   redirect_uri={window.location.origin} */}
+    {/*   onRedirectCallback={onRedirectCallback} */}
+    {/* > */}
+    <App />
+    {/* </Auth0Provider> */}
   </React.StrictMode>,
   document.getElementById("root")
 );

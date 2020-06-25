@@ -19,12 +19,11 @@ export const Auth0Provider = ({
 
   useEffect(() => {
     const initAuth0 = async () => {
-      debugger;
       const auth0FromHook = await createAuth0Client({
         ...initOptions,
         advancedOptions: {
-          defaultScope: "openid profile name username", // change the scopes that are applied to every authz request. **Note**: `openid` is always specified regardless of this setting
-        },
+          defaultScope: "openid profile name username" // change the scopes that are applied to every authz request. **Note**: `openid` is always specified regardless of this setting
+        }
       });
       setAuth0(auth0FromHook);
 
@@ -86,7 +85,7 @@ export const Auth0Provider = ({
         loginWithRedirect: (...p) => auth0Client.loginWithRedirect(...p),
         getTokenSilently: (...p) => auth0Client.getTokenSilently(...p),
         getTokenWithPopup: (...p) => auth0Client.getTokenWithPopup(...p),
-        logout: (...p) => auth0Client.logout(...p),
+        logout: (...p) => auth0Client.logout(...p)
       }}
     >
       {children}

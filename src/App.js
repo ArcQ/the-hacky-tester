@@ -1,6 +1,7 @@
 import React from "react";
 import Chat from "./routes/chat";
 import Login from "./routes/login";
+import Cognito from "./routes/cognito";
 import { Router, Switch, Route, Link } from "react-router-dom";
 import history from "./utils/history";
 
@@ -22,6 +23,9 @@ export default function App() {
             <li>
               <Link to="/login">Login</Link>
             </li>
+            <li>
+              <Link to="/login-cognito">Login Cognito</Link>
+            </li>
           </ul>
         </nav>
         <Switch>
@@ -33,6 +37,9 @@ export default function App() {
           </Route>
           <Route path="/login">
             <Login />
+          </Route>
+          <Route path="/login-cognito">
+            <Cognito />
           </Route>
           <Route path="/">
             <Home />
