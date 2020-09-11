@@ -1,7 +1,10 @@
 import React from "react";
-import { Socket } from "phoenixjs";
-import { backendUrl } from "../../config";
 import { Auth } from "aws-amplify";
+import {
+  BROADCAST_ACTION,
+  createChannel,
+  sendMessageAsync
+} from "@knotfive/chatpi-client-js/src/chatpi-client";
 
 export default class Chat extends React.Component {
   constructor(props) {
@@ -12,28 +15,24 @@ export default class Chat extends React.Component {
   }
 
   componentDidMount() {
-    const roomToken = 100;
-    Auth.currentSession().then(({ accessToken }) => {
-      console.log(accessToken);
-      const socket = new Socket(`ws://${backendUrl}/socket`, {
-        params: {
-          userToken: window.location.search.split("=")[1],
-          authorization: accessToken.jwtToken
-        }
+    const self = this;
+    Auth.currentSession()
+      .then(({ accessToken }) =>
+        createChannel({
+          url: "localhost:4000",
+          userToken: "2",
+          authorizationToken: accessToken.jwtToken,
+          channelId: "cf4aeae1-cda7-41f3-adf7-9b2bb377be7d"
+        })
+      )
+      .then(channel => {
+        self.channel = channel;
+        self.channel.on(BROADCAST_ACTION, msg => {
+          console.log(msg);
+          self.state.messages.push(msg);
+          self.setState({ messages: self.state.messages });
+        });
       });
-      socket.connect();
-
-      this.channel = socket.channel("chatty:lobby", {});
-      this.channel.on("shout", msg => console.log("Got message", msg));
-
-      this.channel
-        .join()
-        .receive("ok", ({ messages }) => console.log("catching up", messages))
-        .receive("error", ({ reason }) => console.log("failed join", reason))
-        .receive("timeout", () =>
-          console.log("Networking issue. Still waiting...")
-        );
-    });
   }
 
   componentWillUnmount() {}
@@ -44,22 +43,22 @@ export default class Chat extends React.Component {
 
   keyPressed(e) {
     if (e.key === "Enter") {
-      console.log(this.state.value);
-      this.channel
-        .push("shout", { body: this.state.value })
-        .receive("ok", msg => console.log("created message", msg))
-        .receive("error", reasons => console.log("create failed", reasons))
-        .receive("timeout", () => console.log("Networking issue..."));
+      sendMessageAsync({
+        channel: this.channel,
+        action: BROADCAST_ACTION,
+        message: this.state.value
+      }).then(response => console.log(response));
     }
   }
 
   render() {
     return (
       <>
-        <h2>Chat</h2>
+        <h1>Chat</h1>
         {this.state.messages.map(msg => (
-          <div>
-            <span>{msg.user}</span>:<span>{msg.m}</span>
+          <div style={{ border: "1px solid black", padding: "5px 20px" }}>
+            <p>{msg.user_id}</p>
+            <b>{msg.text}</b>
           </div>
         ))}
         <input
