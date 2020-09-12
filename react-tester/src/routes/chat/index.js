@@ -46,7 +46,7 @@ export default class Chat extends React.Component {
       sendMessageAsync({
         channel: this.channel,
         action: BROADCAST_ACTION,
-        message: this.state.value
+        message: { text: this.state.value }
       }).then(response => console.log(response));
     }
   }
