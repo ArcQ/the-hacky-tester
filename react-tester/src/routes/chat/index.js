@@ -1,10 +1,9 @@
 import React from "react";
 import { Auth } from "aws-amplify";
 import {
-  BROADCAST_ACTION,
-  createChannel,
-  sendMessageAsync
-} from "@knotfive/chatpi-client-js/src/chatpi-client";
+  Connection,
+  BROADCAST_ACTION
+} from "@knotfive/chatpi-client-js/dist/chatpi-client";
 
 export default class Chat extends React.Component {
   constructor(props) {
@@ -12,27 +11,29 @@ export default class Chat extends React.Component {
     this.state = { date: new Date(), messages: [] };
     this.handleChange = this.handleChange.bind(this);
     this.keyPressed = this.keyPressed.bind(this);
+    this.channelId = "cf4aeae1-cda7-41f3-adf7-9b2bb377be7d";
   }
 
   componentDidMount() {
     const self = this;
-    Auth.currentSession()
-      .then(({ accessToken }) =>
-        createChannel({
+    Auth.currentSession().then(
+      ({ accessToken }) =>
+        (this.connection = new Connection({
           url: "localhost:4000",
+          apiKey: "touchbase",
           userToken: "2",
           authorizationToken: accessToken.jwtToken,
-          channelId: "cf4aeae1-cda7-41f3-adf7-9b2bb377be7d"
-        })
-      )
-      .then(channel => {
-        self.channel = channel;
-        self.channel.on(BROADCAST_ACTION, msg => {
-          console.log(msg);
-          self.state.messages.push(msg);
-          self.setState({ messages: self.state.messages });
-        });
-      });
+          channelIds: [this.channelId],
+          onPresenceChange: v => {
+            console.log(v);
+          },
+          onMessageReceive: (channelId, msg) => {
+            console.log(msg);
+            self.state.messages.push(msg);
+            self.setState({ messages: self.state.messages });
+          }
+        }))
+    );
   }
 
   componentWillUnmount() {}
@@ -43,11 +44,12 @@ export default class Chat extends React.Component {
 
   keyPressed(e) {
     if (e.key === "Enter") {
-      sendMessageAsync({
-        channel: this.channel,
-        action: BROADCAST_ACTION,
-        message: { text: this.state.value }
-      }).then(response => console.log(response));
+      this.connection
+        .sendMessage({
+          channelId: this.channelId,
+          message: { text: this.state.value }
+        })
+        .then(response => console.log(response));
     }
   }
 
@@ -56,7 +58,10 @@ export default class Chat extends React.Component {
       <>
         <h1>Chat</h1>
         {this.state.messages.map(msg => (
-          <div style={{ border: "1px solid black", padding: "5px 20px" }}>
+          <div
+            key={msg.id}
+            style={{ border: "1px solid black", padding: "5px 20px" }}
+          >
             <p>{msg.user_id}</p>
             <b>{msg.text}</b>
           </div>
